@@ -1,0 +1,12 @@
+[package]
+name = "arrow-flight-sql-client"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+arrow = { version = "15.0.0", features = ["prettyprint"] }
+tonic = "0.7"
+clap = { version ="3.1.11", features = ["derive", "cargo"] }
+tokio = { version = "1.0", features = ["macros", "rt", "rt-multi-thread"] }
