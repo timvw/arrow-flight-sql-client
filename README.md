@@ -5,10 +5,14 @@ You can find instructions to run such a server here: [notes on running java Flig
 
 ## Installation
 
+Using homebrew
+
 ```bash
 brew tap timvw/tap
 brew install arrow-flight-sql-client
 ```
+
+Using cargo
 
 ```bash
 cargo install arrow-flight-sql-client
