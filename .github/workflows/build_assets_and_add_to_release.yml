@@ -74,7 +74,7 @@ jobs:
         with:
           use-cross: ${{ matrix.config.cross }}
           command: rustc
-          args: --manifest-path ./Cargo.toml --release --target ${{ matrix.config.target }} --no-default-features -- -C target-cpu=${{ matrix.config.target_cpu }}
+          args: --manifest-path ./Cargo.toml --bin main --release --target ${{ matrix.config.target }} --no-default-features -- -C target-cpu=${{ matrix.config.target_cpu }}
       -
         name: Pack binaries if unix
         if: matrix.config.os != 'windows-latest'
