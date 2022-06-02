@@ -6,11 +6,7 @@ You can find instructions to run such a server here: [notes on running java Flig
 When you run the app without arguments, you will be greeted with it's usage:
 
 ```bash
-cargo run --bin=flightsqlclient --features="flight-sql-experimental"
-
-arrow-flight 12.0.0
-Apache Arrow <dev@arrow.apache.org>
-Apache Arrow Flight
+cargo run
 
 USAGE:
     client <SUBCOMMAND>
@@ -34,7 +30,7 @@ SUBCOMMANDS:
 Listing the available tables can be done as following:
 
 ```
-cargo run --bin=flightsqlclient --features="flight-sql-experimental" -- get-tables --hostname localhost --port 52358
+cargo run -- get-tables --hostname localhost --port 52358
 
 +--------------+----------------+------------------+--------------+
 | catalog_name | db_schema_name | table_name       | table_type   |
@@ -49,7 +45,7 @@ cargo run --bin=flightsqlclient --features="flight-sql-experimental" -- get-tabl
 A query can be executed as following:
 
 ```
-cargo run --bin=flightsqlclient --features="flight-sql-experimental" -- execute --query "select * from app.inttable order by value desc"
+cargo run -- execute --query "select * from app.inttable order by value desc"
 
 +----+--------------+-------+-----------+
 | ID | KEYNAME      | VALUE | FOREIGNID |
