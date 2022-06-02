@@ -2,6 +2,13 @@
 name = "arrow-flight-sql-client"
 version = "0.1.0"
 edition = "2021"
+authors = ["Tim Van Wassenhove <tim@timvw.be>"]
+description = "An Apache Arrow Flight SQL client"
+readme = "README.md"
+repository = "https://github.com/timvw/arrow-flight-sql-client"
+license = "Apache-2.0"
+keywords = ["arrow", "flight-sql"]
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
