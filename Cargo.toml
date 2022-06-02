@@ -1,6 +1,6 @@
 [package]
 name = "arrow-flight-sql-client"
-version = "0.1.0"
+version = "0.3.0"
 edition = "2021"
 authors = ["Tim Van Wassenhove <tim@timvw.be>"]
 description = "An Apache Arrow Flight SQL client"
