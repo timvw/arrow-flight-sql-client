@@ -17,4 +17,4 @@ RUN apt-get install --no-install-recommends -y ca-certificates
 #RUN rm -rf /var/lib/apt/lists/*
 COPY --from=builder /usr/src/arrow-flight-sql-client/target/release/arrow-flight-sql-client /usr/local/bin
 
-CMD ["arrow-flight-sql-client"]
+ENTRYPOINT ["arrow-flight-sql-client"]
