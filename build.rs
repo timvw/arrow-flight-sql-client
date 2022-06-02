@@ -10,15 +10,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let out_dir = "./src";
 
-    tonic_build::configure()
-        .out_dir(out_dir)
-        .file_descriptor_set_path(original_out_dir.join("flight_descriptor.bin"))
-        .compile(&["proto/Flight.proto"], &["proto"])?;
+    {
+        println!("cargo:rerun-if-changed=proto/Flight.proto");
+        tonic_build::configure()
+            .out_dir(out_dir)
+            .file_descriptor_set_path(original_out_dir.join("flight_descriptor.bin"))
+            .compile(&["proto/Flight.proto"], &["proto"])?;
+    }
 
-    tonic_build::configure()
-        .out_dir(out_dir)
-        .file_descriptor_set_path(original_out_dir.join("flight_sql_descriptor.bin"))
-        .compile(&["proto/FlightSql.proto"], &["proto"])?;
+    {
+        println!("cargo:rerun-if-changed=proto/FlightSql.proto");
+        tonic_build::configure()
+            .out_dir(out_dir)
+            .file_descriptor_set_path(original_out_dir.join("flight_sql_descriptor.bin"))
+            .compile(&["proto/FlightSql.proto"], &["proto"])?;
+    }
 
     Ok(())
 }
