@@ -3,6 +3,19 @@
 flightsqlclient is a small command line app to query a [Flight SQL server](https://arrow.apache.org/blog/2022/02/16/introducing-arrow-flight-sql/).
 You can find instructions to run such a server here: [notes on running java FlightSqlExample](http://timvw.be/2022/04/28/notes-on-running-java-flightsqlexample/).
 
+## Installation
+
+```bash
+brew tap timvw/tap
+brew install arrow-flight-sql-client
+```
+
+```bash
+cargo install arrow-flight-sql-client
+```
+
+## Usage
+
 When you run the app without arguments, you will be greeted with it's usage:
 
 ```bash
