@@ -5,20 +5,22 @@ You can find instructions to run such a server here: [notes on running java Flig
 
 ## Installation
 
-Using homebrew
+Download a binary from our [Releases](https://github.com/timvw/arrow-flight-sql-client/releases).
+
+Or using homebrew
 
 ```bash
 brew tap timvw/tap
 brew install arrow-flight-sql-client
 ```
 
-Using cargo
+Or using cargo
 
 ```bash
 cargo install arrow-flight-sql-client
 ```
 
-Using docker
+Or using docker
 
 ```bash
 docker run --rm ghcr.io/timvw/arrow-flight-sql-client:v0.4.0 get-tables --hostname 192.168.1.95
