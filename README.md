@@ -18,6 +18,12 @@ Using cargo
 cargo install arrow-flight-sql-client
 ```
 
+Using docker
+
+```bash
+docker run --rm ghcr.io/timvw/arrow-flight-sql-client:v0.4.0 get-tables --hostname 192.168.1.95
+```
+
 ## Usage
 
 When you run the app without arguments, you will be greeted with it's usage:
