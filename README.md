@@ -19,7 +19,7 @@ cargo install arrow-flight-sql-client
 When you run the app without arguments, you will be greeted with it's usage:
 
 ```bash
-cargo run
+arrow-flight-sql-client
 
 USAGE:
     client <SUBCOMMAND>
@@ -43,7 +43,7 @@ SUBCOMMANDS:
 Listing the available tables can be done as following:
 
 ```
-cargo run -- get-tables --hostname localhost --port 52358
+arrow-flight-sql-client get-tables --hostname localhost --port 52358
 
 +--------------+----------------+------------------+--------------+
 | catalog_name | db_schema_name | table_name       | table_type   |
@@ -58,7 +58,7 @@ cargo run -- get-tables --hostname localhost --port 52358
 A query can be executed as following:
 
 ```
-cargo run -- execute --query "select * from app.inttable order by value desc"
+arrow-flight-sql-client execute --query "select * from app.inttable order by value desc"
 
 +----+--------------+-------+-----------+
 | ID | KEYNAME      | VALUE | FOREIGNID |
