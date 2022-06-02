@@ -1,6 +1,7 @@
 use arrow::datatypes::SchemaRef;
-use arrow::error::Result;
 use arrow::error::ArrowError;
+use arrow::error::Result;
+use arrow_flight_sql_client::arrow_flight_protocol::flight_service_client::FlightServiceClient;
 use arrow_flight_sql_client::arrow_flight_protocol::*;
 use arrow_flight_sql_client::arrow_flight_protocol_sql::*;
 use arrow_flight_sql_client::client::FlightSqlServiceClient;
@@ -9,7 +10,6 @@ use clap::{Args, Parser, Subcommand};
 use std::cell::RefCell;
 use tonic::transport::Channel;
 use tonic::Streaming;
-use arrow_flight_sql_client::arrow_flight_protocol::flight_service_client::FlightServiceClient;
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
@@ -128,10 +128,7 @@ struct GetPrimaryKeysArgs {
     table: String,
 }
 
-async fn new_client(
-    hostname: &String,
-    port: &usize,
-) -> Result<FlightSqlServiceClient<Channel>> {
+async fn new_client(hostname: &String, port: &usize) -> Result<FlightSqlServiceClient<Channel>> {
     let client_address = format!("http://{}:{}", hostname, port);
     let inner = FlightServiceClient::connect(client_address)
         .await
@@ -139,10 +136,7 @@ async fn new_client(
     Ok(FlightSqlServiceClient::new(RefCell::new(inner)))
 }
 
-async fn get_and_print(
-    mut client: FlightSqlServiceClient<Channel>,
-    fi: FlightInfo,
-) -> Result<()> {
+async fn get_and_print(mut client: FlightSqlServiceClient<Channel>, fi: FlightInfo) -> Result<()> {
     let first_endpoint = fi.endpoint.first().ok_or(ArrowError::ComputeError(
         "Failed to get first endpoint".to_string(),
     ))?;
@@ -168,41 +162,41 @@ async fn main() -> Result<()> {
 
     match &cli.command {
         Commands::Execute(ExecuteArgs {
-                              common: Common { hostname, port },
-                              query,
-                          }) => {
+            common: Common { hostname, port },
+            query,
+        }) => {
             let mut client = new_client(hostname, port).await?;
             let fi = client.execute(query.to_string()).await?;
             get_and_print(client, fi).await
         }
         Commands::ExecuteUpdate(ExecuteUpdateArgs {
-                                    common: Common { hostname, port },
-                                    query,
-                                }) => {
+            common: Common { hostname, port },
+            query,
+        }) => {
             let mut client = new_client(hostname, port).await?;
             let record_count = client.execute_update(query.to_string()).await?;
             println!("Updated {} records.", record_count);
             Ok(())
         }
         Commands::GetCatalogs(GetCatalogsArgs {
-                                  common: Common { hostname, port },
-                              }) => {
+            common: Common { hostname, port },
+        }) => {
             let mut client = new_client(hostname, port).await?;
             let fi = client.get_catalogs().await?;
             get_and_print(client, fi).await
         }
         Commands::GetTableTypes(GetTableTypesArgs {
-                                    common: Common { hostname, port },
-                                }) => {
+            common: Common { hostname, port },
+        }) => {
             let mut client = new_client(hostname, port).await?;
             let fi = client.get_table_types().await?;
             get_and_print(client, fi).await
         }
         Commands::GetSchemas(GetSchemasArgs {
-                                 common: Common { hostname, port },
-                                 catalog,
-                                 db_schema_filter_pattern: schema,
-                             }) => {
+            common: Common { hostname, port },
+            catalog,
+            db_schema_filter_pattern: schema,
+        }) => {
             let mut client = new_client(hostname, port).await?;
             let fi = client
                 .get_db_schemas(CommandGetDbSchemas {
@@ -213,12 +207,12 @@ async fn main() -> Result<()> {
             get_and_print(client, fi).await
         }
         Commands::GetTables(GetTablesArgs {
-                                common: Common { hostname, port },
-                                catalog,
-                                db_schema_filter_pattern,
-                                table_name_filter_pattern,
-                                include_schema,
-                            }) => {
+            common: Common { hostname, port },
+            catalog,
+            db_schema_filter_pattern,
+            table_name_filter_pattern,
+            include_schema,
+        }) => {
             let mut client = new_client(hostname, port).await?;
             let fi = client
                 .get_tables(CommandGetTables {
@@ -236,11 +230,11 @@ async fn main() -> Result<()> {
             get_and_print(client, fi).await
         }
         Commands::GetExportedKeys(GetExportedKeysArgs {
-                                      common: Common { hostname, port },
-                                      catalog,
-                                      db_schema,
-                                      table,
-                                  }) => {
+            common: Common { hostname, port },
+            catalog,
+            db_schema,
+            table,
+        }) => {
             let mut client = new_client(hostname, port).await?;
             let fi = client
                 .get_exported_keys(CommandGetExportedKeys {
@@ -252,11 +246,11 @@ async fn main() -> Result<()> {
             get_and_print(client, fi).await
         }
         Commands::GetImportedKeys(GetImportedKeysArgs {
-                                      common: Common { hostname, port },
-                                      catalog,
-                                      db_schema,
-                                      table,
-                                  }) => {
+            common: Common { hostname, port },
+            catalog,
+            db_schema,
+            table,
+        }) => {
             let mut client = new_client(hostname, port).await?;
             let fi = client
                 .get_imported_keys(CommandGetImportedKeys {
@@ -268,11 +262,11 @@ async fn main() -> Result<()> {
             get_and_print(client, fi).await
         }
         Commands::GetPrimaryKeys(GetPrimaryKeysArgs {
-                                     common: Common { hostname, port },
-                                     catalog,
-                                     db_schema,
-                                     table,
-                                 }) => {
+            common: Common { hostname, port },
+            catalog,
+            db_schema,
+            table,
+        }) => {
             let mut client = new_client(hostname, port).await?;
             let fi = client
                 .get_primary_keys(CommandGetPrimaryKeys {

@@ -13,18 +13,13 @@ use tonic::{
     Streaming,
 };
 
-use crate::arrow_flight_protocol::{
-    flight_service_client::FlightServiceClient, *,
-};
+use crate::arrow_flight_protocol::{flight_service_client::FlightServiceClient, *};
 
-use crate::arrow_flight_protocol::FlightDescriptor;
 use crate::arrow_flight_protocol::flight_descriptor::DescriptorType;
+use crate::arrow_flight_protocol::FlightDescriptor;
 
-use std::{
-    convert::{TryFrom},
-    ops::Deref,
-};
 use std::collections::HashMap;
+use std::{convert::TryFrom, ops::Deref};
 
 use crate::arrow_flight_protocol_sql::*;
 
@@ -89,8 +84,8 @@ where
             .await
             .map_err(status_to_arrow_error)?
             .unwrap();
-        let any: prost_types::Any = prost::Message::decode(&*result.app_metadata)
-            .map_err(decode_error_to_arrow_error)?;
+        let any: prost_types::Any =
+            prost::Message::decode(&*result.app_metadata).map_err(decode_error_to_arrow_error)?;
         let result: DoPutUpdateResult = any.unpack()?.unwrap();
         Ok(result.record_count)
     }
@@ -102,10 +97,7 @@ where
     }
 
     /// Request a list of database schemas.
-    pub async fn get_db_schemas(
-        &mut self,
-        request: CommandGetDbSchemas,
-    ) -> Result<FlightInfo> {
+    pub async fn get_db_schemas(&mut self, request: CommandGetDbSchemas) -> Result<FlightInfo> {
         self.get_flight_info_for_command(request).await
     }
 
@@ -126,10 +118,7 @@ where
     }
 
     /// Request the primary keys for a table.
-    pub async fn get_primary_keys(
-        &mut self,
-        request: CommandGetPrimaryKeys,
-    ) -> Result<FlightInfo> {
+    pub async fn get_primary_keys(&mut self, request: CommandGetPrimaryKeys) -> Result<FlightInfo> {
         self.get_flight_info_for_command(request).await
     }
 
@@ -195,10 +184,8 @@ where
         let any: prost_types::Any =
             prost::Message::decode(&*result.body).map_err(decode_error_to_arrow_error)?;
         let prepared_result: ActionCreatePreparedStatementResult = any.unpack()?.unwrap();
-        let dataset_schema =
-            Schema::try_from(IpcMessage(prepared_result.dataset_schema))?;
-        let parameter_schema =
-            Schema::try_from(IpcMessage(prepared_result.parameter_schema))?;
+        let dataset_schema = Schema::try_from(IpcMessage(prepared_result.dataset_schema))?;
+        let parameter_schema = Schema::try_from(IpcMessage(prepared_result.parameter_schema))?;
         Ok(PreparedStatement::new(
             &self.inner,
             prepared_result.prepared_statement_handle,
@@ -249,9 +236,7 @@ where
     /// Executes the prepared statement query on the server.
     pub async fn execute(&mut self) -> Result<FlightInfo> {
         if self.is_closed() {
-            return Err(ArrowError::IoError(
-                "Statement already closed.".to_string(),
-            ));
+            return Err(ArrowError::IoError("Statement already closed.".to_string()));
         }
         let cmd = CommandPreparedStatementQuery {
             prepared_statement_handle: self.handle.clone(),
@@ -271,8 +256,8 @@ where
             .await
             .map_err(status_to_arrow_error)?
             .unwrap();
-        let _: prost_types::Any = prost::Message::decode(&*result.app_metadata)
-            .map_err(decode_error_to_arrow_error)?;
+        let _: prost_types::Any =
+            prost::Message::decode(&*result.app_metadata).map_err(decode_error_to_arrow_error)?;
         Err(ArrowError::NotYetImplemented(
             "Not yet implemented".to_string(),
         ))
@@ -281,9 +266,7 @@ where
     /// Executes the prepared statement update query on the server.
     pub async fn execute_update(&self) -> Result<i64> {
         if self.is_closed() {
-            return Err(ArrowError::IoError(
-                "Statement already closed.".to_string(),
-            ));
+            return Err(ArrowError::IoError("Statement already closed.".to_string()));
         }
         let cmd = CommandPreparedStatementQuery {
             prepared_statement_handle: self.handle.clone(),
@@ -303,8 +286,8 @@ where
             .await
             .map_err(status_to_arrow_error)?
             .unwrap();
-        let any: prost_types::Any = prost::Message::decode(&*result.app_metadata)
-            .map_err(decode_error_to_arrow_error)?;
+        let any: prost_types::Any =
+            prost::Message::decode(&*result.app_metadata).map_err(decode_error_to_arrow_error)?;
         let result: DoPutUpdateResult = any.unpack()?.unwrap();
         Ok(result.record_count)
     }
@@ -320,10 +303,7 @@ where
     }
 
     /// Set a RecordBatch that contains the parameters that will be bind.
-    pub async fn set_parameters(
-        &mut self,
-        parameter_binding: RecordBatch<'a>,
-    ) -> Result<()> {
+    pub async fn set_parameters(&mut self, parameter_binding: RecordBatch<'a>) -> Result<()> {
         self.parameter_binding = Some(parameter_binding);
         Ok(())
     }
@@ -332,9 +312,7 @@ where
     /// anymore and server can free up any resources.
     pub async fn close(&mut self) -> Result<()> {
         if self.is_closed() {
-            return Err(ArrowError::IoError(
-                "Statement already closed.".to_string(),
-            ));
+            return Err(ArrowError::IoError("Statement already closed.".to_string()));
         }
         let cmd = ActionClosePreparedStatementRequest {
             prepared_statement_handle: self.handle.clone(),
@@ -403,10 +381,9 @@ pub fn arrow_data_from_flight_data(
     flight_data: FlightData,
     arrow_schema_ref: &SchemaRef,
 ) -> Result<ArrowFlightData> {
-    let ipc_message =
-        arrow::ipc::root_as_message(&flight_data.data_header[..]).map_err(|err| {
-            ArrowError::ParseError(format!("Unable to get root as message: {:?}", err))
-        })?;
+    let ipc_message = arrow::ipc::root_as_message(&flight_data.data_header[..]).map_err(|err| {
+        ArrowError::ParseError(format!("Unable to get root as message: {:?}", err))
+    })?;
 
     match ipc_message.header_type() {
         MessageHeader::RecordBatch => {
@@ -414,8 +391,7 @@ pub fn arrow_data_from_flight_data(
                 ipc_message
                     .header_as_record_batch()
                     .ok_or(ArrowError::ComputeError(
-                        "Unable to convert flight data header to a record batch"
-                            .to_string(),
+                        "Unable to convert flight data header to a record batch".to_string(),
                     ))?;
 
             let dictionaries_by_field = HashMap::new();
@@ -429,26 +405,23 @@ pub fn arrow_data_from_flight_data(
             Ok(ArrowFlightData::RecordBatch(record_batch))
         }
         MessageHeader::Schema => {
-            let ipc_schema =
-                ipc_message
-                    .header_as_schema()
-                    .ok_or(ArrowError::ComputeError(
-                        "Unable to convert flight data header to a schema".to_string(),
-                    ))?;
+            let ipc_schema = ipc_message
+                .header_as_schema()
+                .ok_or(ArrowError::ComputeError(
+                    "Unable to convert flight data header to a schema".to_string(),
+                ))?;
 
             let arrow_schema = arrow::ipc::convert::fb_to_schema(ipc_schema);
             Ok(ArrowFlightData::Schema(arrow_schema))
         }
         MessageHeader::DictionaryBatch => {
-            let _ = ipc_message.header_as_dictionary_batch().ok_or(
-                ArrowError::ComputeError(
-                    "Unable to convert flight data header to a dictionary batch"
-                        .to_string(),
-                ),
-            )?;
+            let _ = ipc_message
+                .header_as_dictionary_batch()
+                .ok_or(ArrowError::ComputeError(
+                    "Unable to convert flight data header to a dictionary batch".to_string(),
+                ))?;
             Err(ArrowError::NotYetImplemented(
-                "no idea on how to convert an ipc dictionary batch to an arrow type"
-                    .to_string(),
+                "no idea on how to convert an ipc dictionary batch to an arrow type".to_string(),
             ))
         }
         MessageHeader::Tensor => {
@@ -462,16 +435,13 @@ pub fn arrow_data_from_flight_data(
             ))
         }
         MessageHeader::SparseTensor => {
-            let _ =
-                ipc_message
-                    .header_as_sparse_tensor()
-                    .ok_or(ArrowError::ComputeError(
-                        "Unable to convert flight data header to a sparse tensor"
-                            .to_string(),
-                    ))?;
+            let _ = ipc_message
+                .header_as_sparse_tensor()
+                .ok_or(ArrowError::ComputeError(
+                    "Unable to convert flight data header to a sparse tensor".to_string(),
+                ))?;
             Err(ArrowError::NotYetImplemented(
-                "no idea on how to convert an ipc sparse tensor to an arrow type"
-                    .to_string(),
+                "no idea on how to convert an ipc sparse tensor to an arrow type".to_string(),
             ))
         }
         _ => Err(ArrowError::ComputeError(format!(
@@ -598,9 +568,7 @@ impl TryFrom<IpcMessage> for Schema {
             ))
         })?;
         let ipc_schema = msg.header_as_schema().ok_or_else(|| {
-            ArrowError::ParseError(
-                "Unable to convert flight info to a schema".to_string(),
-            )
+            ArrowError::ParseError("Unable to convert flight info to a schema".to_string())
         })?;
         Ok(convert::fb_to_schema(ipc_schema))
     }
