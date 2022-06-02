@@ -63,7 +63,7 @@ jobs:
           default: true
       -
         name: Publish crate
-        run: cargo publish --no-verify
+        run: cargo publish
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
