@@ -16,7 +16,7 @@ jobs:
     steps:
       -
         name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: true
       -
@@ -48,7 +48,7 @@ jobs:
       -
         name: Create Release
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           draft: true
           name: Release v${{ github.event.inputs.version }}
