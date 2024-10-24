@@ -13,16 +13,16 @@ keywords = ["arrow", "flight-sql"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-arrow = { version = "15.0.0", features = ["prettyprint"] }
+arrow = { version = "53.0.0", features = ["prettyprint"] }
 #arrow-flight = "15.0.0"
-tonic = "0.7"
-clap = { version ="3.1.18", features = ["derive", "cargo"] }
+tonic = "0.12"
+clap = { version ="4.0.0", features = ["derive", "cargo"] }
 tokio = { version = "1.18", features = ["macros", "rt", "rt-multi-thread"] }
-prost = "0.10"
-prost-types = { version = "0.10.1" }
-prost-derive = "0.10"
+prost = "0.13"
+prost-types = { version = "0.13.0" }
+prost-derive = "0.13"
 futures = { version = "0.3", default-features = false, features = ["alloc"]}
 bytes = "1"
 
 [build-dependencies]
-tonic-build = "0.7"
+tonic-build = "0.12"
