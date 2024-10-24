@@ -1,4 +1,4 @@
-FROM rust:1.61 as builder
+FROM rust:1.82 as builder
 
 WORKDIR /usr/src/arrow-flight-sql-client
 COPY ./Cargo.toml ./Cargo.toml

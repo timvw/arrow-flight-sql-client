@@ -64,7 +64,7 @@ jobs:
           args: --version 0.1.16 cross
       -
         name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ inputs.commitish }}
           submodules: true
@@ -85,7 +85,7 @@ jobs:
         run: compress-archive ./target/${{ matrix.config.target }}/release/${{ inputs.app_name }}.exe ${{ inputs.app_name }}-${{ inputs.version }}-${{ matrix.config.target }}-${{ matrix.config.target_cpu }}.zip
       -
         name: Upload binaries to release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: ${{ inputs.app_name }}-${{ inputs.version }}-${{ matrix.config.target }}-${{ matrix.config.target_cpu }}.*
